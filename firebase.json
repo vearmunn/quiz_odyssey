@@ -1,0 +1,1 @@
+{"flutter":{"platforms":{"android":{"default":{"projectId":"quiz-odyssey","appId":"1:270276530943:android:5fcd0d110f464d298f32ca","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"quiz-odyssey","configurations":{"android":"1:270276530943:android:5fcd0d110f464d298f32ca","ios":"1:270276530943:ios:e98edf038081055a8f32ca"}}}}}}

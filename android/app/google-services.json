@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "270276530943",
+    "project_id": "quiz-odyssey",
+    "storage_bucket": "quiz-odyssey.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:270276530943:android:5fcd0d110f464d298f32ca",
+        "android_client_info": {
+          "package_name": "com.example.quiz_odyssey"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAQe_NcvUvi7hqEX8OXYVTb_vvDEzhGkYQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
