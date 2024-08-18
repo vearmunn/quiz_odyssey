@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:quiz_odyssey/controllers/db_controller.dart';
 import 'package:quiz_odyssey/services/api_service.dart';
 
 import '../models/category.dart';
@@ -18,6 +19,7 @@ class ApiController extends GetxController {
   var questionsAnsweredCorrectly = 0.obs;
 
   final apiService = ApiService();
+  final dbController = DBController();
 
   Future fetchAllCategories() async {
     isLoading.value = true;

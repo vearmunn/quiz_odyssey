@@ -2,6 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:quiz_odyssey/controllers/api_controller.dart';
 import 'package:quiz_odyssey/pages/quiz_page.dart';
+import 'package:quiz_odyssey/theme/colors.dart';
+import 'package:quiz_odyssey/theme/images.dart';
+import 'package:quiz_odyssey/utils/spacer.dart';
+import 'package:quiz_odyssey/utils/white_loading.dart';
+import 'package:quiz_odyssey/widgets/category_tile.dart';
+import 'package:quiz_odyssey/widgets/my_button.dart';
 
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
@@ -13,9 +19,6 @@ class Homepage extends StatefulWidget {
 class _HomepageState extends State<Homepage> {
   @override
   void initState() {
-    final apiController = Get.put(ApiController());
-    apiController.fetchAllCategories();
-
     super.initState();
   }
 
@@ -28,35 +31,59 @@ class _HomepageState extends State<Homepage> {
         context: context,
         builder: (context) => Dialog(
           child: Container(
+            decoration: BoxDecoration(
+                color: navBarColor, borderRadius: BorderRadius.circular(15)),
             padding: const EdgeInsets.all(16.0),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Text('Choose difficulty!'),
-                ElevatedButton(
-                    onPressed: () {
+                Align(
+                    alignment: Alignment.centerRight,
+                    child: GestureDetector(
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                        child: const Icon(
+                          Icons.close,
+                          color: Colors.white,
+                        ))),
+                const Text(
+                  'Select difficulty!',
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold),
+                ),
+                verticalSpacer(28),
+                MyButton(
+                    text: 'Easy',
+                    bgColor: emerald,
+                    onTap: () {
                       Navigator.pop(context);
                       Get.to(() => const QuizPage());
                       ac.fetchQuestions(
                           ac.categoryList[index].id.toString(), 'easy');
-                    },
-                    child: const Text('Easy')),
-                ElevatedButton(
-                    onPressed: () {
+                    }),
+                verticalSpacer(20),
+                MyButton(
+                    text: 'Medium',
+                    bgColor: orange,
+                    onTap: () {
                       Navigator.pop(context);
                       Get.to(() => const QuizPage());
                       ac.fetchQuestions(
                           ac.categoryList[index].id.toString(), 'medium');
-                    },
-                    child: const Text('Medium')),
-                ElevatedButton(
-                    onPressed: () {
+                    }),
+                verticalSpacer(20),
+                MyButton(
+                    text: 'Hard',
+                    bgColor: chiGong,
+                    onTap: () {
                       Navigator.pop(context);
                       Get.to(() => const QuizPage());
                       ac.fetchQuestions(
                           ac.categoryList[index].id.toString(), 'hard');
-                    },
-                    child: const Text('Hard'))
+                    }),
               ],
             ),
           ),
@@ -65,34 +92,49 @@ class _HomepageState extends State<Homepage> {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Homepage'),
-        centerTitle: true,
-      ),
-      body: Obx(() {
-        if (ac.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
-        } else if (ac.errMessage.isNotEmpty) {
-          return Center(child: Text(ac.errMessage.value));
-        } else {
-          return ListView.separated(
-            itemCount: ac.categoryList.length,
-            itemBuilder: (BuildContext context, int index) {
-              return ListTile(
-                  title: Text(ac.categoryList[index].categoryName),
-                  trailing: const Icon(
-                    Icons.arrow_forward_ios,
-                    size: 12,
-                  ),
-                  onTap: () => showDifficultyDialog(index));
-            },
-            separatorBuilder: (context, index) => const Divider(
-              indent: 16,
-              endIndent: 20,
+      backgroundColor: bgColor,
+      body: SafeArea(
+        child: ListView(
+          padding: const EdgeInsets.all(16),
+          children: [
+            const Text(
+              'Choose Category!',
+              style: TextStyle(
+                  fontSize: 24,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold),
             ),
-          );
-        }
-      }),
+            verticalSpacer(8),
+            const Text(
+              'Pick the Category That Interests You Most and Dive Into the Quiz Odyssey!',
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
+            verticalSpacer(20),
+            Obx(() {
+              if (ac.isLoading.value) {
+                return whiteCircleLoading();
+              } else if (ac.errMessage.isNotEmpty) {
+                return Center(child: Text(ac.errMessage.value));
+              } else {
+                return ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: ac.categoryList.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return CategoryTile(
+                        bgColor: categoryColors[index],
+                        name: ac.categoryList[index].categoryName,
+                        urlImage: categoryImages[index],
+                        onTap: () => showDifficultyDialog(index));
+                  },
+                );
+              }
+            }),
+          ],
+        ),
+      ),
     );
   }
 }

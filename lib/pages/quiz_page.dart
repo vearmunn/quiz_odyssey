@@ -1,12 +1,15 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:quiz_odyssey/theme/colors.dart';
 
 import 'package:quiz_odyssey/utils/question_format.dart';
 import 'package:quiz_odyssey/utils/spacer.dart';
 import 'package:quiz_odyssey/widgets/my_button.dart';
 
 import '../controllers/api_controller.dart';
+import '../utils/white_loading.dart';
+import '../widgets/answer_tile.dart';
 import 'result_page.dart';
 
 class QuizPage extends StatelessWidget {
@@ -22,23 +25,19 @@ class QuizPage extends StatelessWidget {
           duration: const Duration(milliseconds: 200), curve: Curves.easeInOut);
     }
 
-    void showAlert() {
+    void showAlert(String message, String yesButtonText, VoidCallback onTap) {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
           title: const Text('Warning'),
-          content: const Text('Are you sure you want to finish this quiz?'),
+          content: Text(message),
           actions: [
             TextButton(
                 onPressed: () {
                   Navigator.pop(context);
                 },
                 child: const Text('Cancel')),
-            TextButton(
-                onPressed: () {
-                  Get.offAll(() => const ResultPage());
-                },
-                child: const Text('Finish')),
+            TextButton(onPressed: onTap, child: Text(yesButtonText)),
           ],
         ),
       );
@@ -46,7 +45,19 @@ class QuizPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        // backgroundColor: Colors.grey[100],
+        backgroundColor: navBarColor,
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back,
+            color: Colors.white,
+          ),
+          onPressed: () {
+            showAlert("Are you sure you want to quit this quiz?", "Quit", () {
+              Navigator.pop(context);
+              Get.back();
+            });
+          },
+        ),
         title: Obx(() => Column(
               children: [
                 Text(
@@ -55,7 +66,10 @@ class QuizPage extends StatelessWidget {
                       : ac.fetchQuestionErrMessage.value.isNotEmpty
                           ? ""
                           : removeSubtitle(ac.questionList[0].category),
-                  style: const TextStyle(fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
                 ),
                 Text(
                   ac.isFetchQuestionLoading.value
@@ -63,20 +77,27 @@ class QuizPage extends StatelessWidget {
                       : ac.fetchQuestionErrMessage.value.isNotEmpty
                           ? ""
                           : ac.questionList[0].difficulty,
-                  style: const TextStyle(fontSize: 12, color: Colors.grey),
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: Colors.white,
+                  ),
                 ),
               ],
             )),
         centerTitle: true,
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(10.0),
+          child: Container(),
+        ),
       ),
       body: Obx(() {
         if (ac.isFetchQuestionLoading.value) {
-          return const Center(child: CircularProgressIndicator());
+          return whiteCircleLoading();
         } else if (ac.fetchQuestionErrMessage.isNotEmpty) {
           return Center(child: Text(ac.fetchQuestionErrMessage.value));
         } else {
           return Container(
-            color: Colors.grey[300],
+            color: bgColor,
             child: PageView.builder(
               controller: pageController,
               itemBuilder: (context, questionIndex) => Padding(
@@ -85,12 +106,19 @@ class QuizPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                        "Question ${questionIndex + 1} of ${ac.questionList.length}"),
+                      "Question ${questionIndex + 1} of ${ac.questionList.length}",
+                      style: const TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
                     verticalSpacer(16),
                     Text(
                       ac.questionList[questionIndex].question,
                       style: const TextStyle(
-                          fontSize: 22, fontWeight: FontWeight.bold),
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
                     ),
                     verticalSpacer(20),
                     ListView.builder(
@@ -106,10 +134,11 @@ class QuizPage extends StatelessWidget {
                           return AnswerTile(
                             answer: answer,
                             bgColor: userAnswer == answer
-                                ? Colors.blueGrey.shade200
+                                ? Colors.blue
                                 : Colors.white,
                             onTap: () {
                               ac.saveUserAnswer(questionIndex, answer);
+
                               changePage(questionIndex + 1);
                             },
                           );
@@ -138,7 +167,11 @@ class QuizPage extends StatelessWidget {
                                         : 'Next',
                                 onTap: () {
                                   if (questionIndex == 4) {
-                                    showAlert();
+                                    showAlert(
+                                        'Are you sure you want to finish this quiz?',
+                                        "Finish", () {
+                                      Get.offAll(() => const ResultPage());
+                                    });
                                   } else {
                                     changePage(questionIndex + 1);
                                   }
@@ -155,36 +188,6 @@ class QuizPage extends StatelessWidget {
           );
         }
       }),
-    );
-  }
-}
-
-class AnswerTile extends StatelessWidget {
-  const AnswerTile({
-    super.key,
-    required this.answer,
-    required this.bgColor,
-    required this.onTap,
-  });
-
-  final String answer;
-  final Color bgColor;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 20),
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-            color: bgColor, borderRadius: BorderRadius.circular(10)),
-        child: Text(
-          answer,
-          style: const TextStyle(fontSize: 16),
-        ),
-      ),
     );
   }
 }

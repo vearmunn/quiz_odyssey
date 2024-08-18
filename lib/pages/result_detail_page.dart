@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:quiz_odyssey/pages/homepage.dart';
-import 'package:quiz_odyssey/pages/quiz_page.dart';
+import 'package:quiz_odyssey/controllers/db_controller.dart';
+
+import 'package:quiz_odyssey/pages/primary_page.dart';
+import 'package:quiz_odyssey/theme/colors.dart';
 import 'package:quiz_odyssey/utils/spacer.dart';
 import 'package:quiz_odyssey/widgets/my_button.dart';
 
 import '../controllers/api_controller.dart';
+import '../widgets/answer_tile.dart';
 
 class ResultDetailPage extends StatelessWidget {
   const ResultDetailPage({super.key});
@@ -13,12 +16,24 @@ class ResultDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ac = Get.find<ApiController>();
+    final dbc = Get.find<DBController>();
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Results Details'),
+        backgroundColor: navBarColor,
+        title: const Text(
+          'Results Details',
+          style: TextStyle(color: Colors.white),
+        ),
         centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back,
+            color: Colors.white,
+          ),
+          onPressed: () => Get.back(),
+        ),
       ),
-      backgroundColor: Colors.grey.shade300,
+      backgroundColor: bgColor,
       body: ListView.separated(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 100),
         separatorBuilder: (context, index) => const Divider(
@@ -32,7 +47,10 @@ class ResultDetailPage extends StatelessWidget {
               verticalSpacer(8),
               Text(ac.questionList[questionIndex].question,
                   style: const TextStyle(
-                      fontSize: 22, fontWeight: FontWeight.bold)),
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  )),
               verticalSpacer(16),
               ListView.builder(
                 shrinkWrap: true,
@@ -50,24 +68,25 @@ class ResultDetailPage extends StatelessWidget {
                           ? Colors.green
                           : answer == userAnswer && answer != correctAnswer
                               ? Colors.red
-                              : Colors.white,
+                              : Colors.grey.shade300,
+                      useTrailing: answer == correctAnswer,
                       onTap: () {});
                 },
               ),
-              // verticalSpacer(80),
-              // MyButton(text: 'Homepage', onTap: ()=> Get.offAll(()=> const Homepage()))
             ],
           );
         },
       ),
       bottomSheet: Container(
         padding: const EdgeInsets.all(16),
-        color: Colors.white,
+        color: navBarColor,
         height: 85,
         child: MyButton(
             text: 'Homepage',
             onTap: () {
-              Get.offAll(() => const Homepage());
+              Get.offAll(() => const PrimaryPage());
+              dbc.coins.value = ac.questionsAnsweredCorrectly.value;
+              dbc.saveQuizRecord(ac.questionList[0].difficulty);
               ac.questionsAnsweredCorrectly.value = 0;
               ac.userAnswers.clear();
             }),

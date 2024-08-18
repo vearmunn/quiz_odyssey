@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../controllers/auth_controller.dart';
+import '../theme/colors.dart';
+import '../utils/custom_snackbar.dart';
 import '../utils/spacer.dart';
+import '../utils/white_loading.dart';
 import '../widgets/auth_textfield.dart';
 import '../widgets/my_button.dart';
 
@@ -29,6 +32,7 @@ class _RegisterPageState extends State<RegisterPage> {
     TextEditingController passwordController = TextEditingController();
     TextEditingController cpasswordController = TextEditingController();
     return Scaffold(
+      backgroundColor: bgColor,
       body: Center(
         child: Form(
           key: key,
@@ -42,9 +46,9 @@ class _RegisterPageState extends State<RegisterPage> {
                 "Let's Create Your Account!",
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                    fontSize: 22,
+                    fontSize: 24,
                     fontWeight: FontWeight.bold,
-                    color: Colors.black87),
+                    color: Colors.white),
               ),
               verticalSpacer(30),
               AuthTextField(
@@ -73,7 +77,7 @@ class _RegisterPageState extends State<RegisterPage> {
               verticalSpacer(20),
               Obx(
                 () => authC.isLoading.value
-                    ? const Center(child: CircularProgressIndicator())
+                    ? whiteCircleLoading()
                     : MyButton(
                         text: 'REGISTER',
                         onTap: () {
@@ -81,10 +85,13 @@ class _RegisterPageState extends State<RegisterPage> {
                               passwordController.text ==
                                   cpasswordController.text) {
                             authC.registerUser(
-                                emailController.text, passwordController.text);
+                                email: emailController.text,
+                                password: passwordController.text,
+                                name: nameController.text);
                           } else if (passwordController.text !=
                               cpasswordController.text) {
-                            Get.snackbar('Warning!', "Password doesn't match!");
+                            customSnackbar(
+                                'Warning!', "Password doesn't match!");
                           }
                         }),
               ),
@@ -92,14 +99,14 @@ class _RegisterPageState extends State<RegisterPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text("Already have an account? "),
+                  const Text("Already have an account? ",
+                      style: TextStyle(color: Colors.white)),
                   GestureDetector(
                       onTap: widget.onTap,
                       child: const Text(
                         " Login",
                         style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.deepPurple),
+                            fontWeight: FontWeight.bold, color: Colors.blue),
                       )),
                 ],
               ),

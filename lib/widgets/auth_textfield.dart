@@ -27,8 +27,10 @@ class AuthTextField extends StatelessWidget {
         }
         return null;
       },
+      style: const TextStyle(color: Colors.white),
       decoration: InputDecoration(
           hintText: hintText,
+          hintStyle: const TextStyle(color: Colors.grey),
           contentPadding: const EdgeInsets.fromLTRB(20, 16, 16, 16),
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
           errorBorder: OutlineInputBorder(
@@ -39,8 +41,7 @@ class AuthTextField extends StatelessWidget {
               borderSide: const BorderSide(color: Colors.grey, width: 1)),
           focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
-              borderSide:
-                  const BorderSide(color: Colors.deepPurple, width: 1))),
+              borderSide: const BorderSide(color: Colors.blue, width: 1))),
     );
   }
 }
