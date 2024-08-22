@@ -67,8 +67,6 @@ class LeaderboardPage extends StatelessWidget {
                         )
                       ],
                     ),
-                    // trailing: ,
-
                     textColor: Colors.white,
                   );
                 },
