@@ -30,7 +30,6 @@ Users can select a category and difficulty level before starting a quiz. Their p
 <img width="320" alt="page 1" src="https://github.com/user-attachments/assets/1fe875ea-4c61-4638-a45e-4b1d9e34fbb8" />
 <img width="320"  alt="page 2" src="https://github.com/user-attachments/assets/ab0caf8e-9f37-4cc3-8d2e-5761740667fc" />
 <img width="320"  alt="page 3" src="https://github.com/user-attachments/assets/b0cab59c-ea98-4882-96b0-c4a8d94315cc" />
-<img width="320"  alt="thumbnail" src="https://github.com/user-attachments/assets/a0f381ab-8f53-4d37-bc77-eb033af123ce" />
 
 
 ## License
